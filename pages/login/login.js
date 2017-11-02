@@ -11,8 +11,12 @@ Page({
     verifyCodeText:"获取验证码",
     openidParms: {},
     loginType: "0",
-    switchType: 1
+    switchType: 2,
+    imageUrl:"../../images/icon/temporary_user.png",
   
+    name:"刘阳",
+    phone:"158204808434",
+    idcard:"421222198910262830",
   },
 
   /**
@@ -153,32 +157,50 @@ Page({
   },
 
 
-//提交信息
+//提交手机信息
   formSubmit:function(e){
-    this.setData({
-      commitState: true
+    var that = this;
+    console.log(3);
+    console.log(e.detail.value);
+    that.setData({
+      commitState: false,
+      loginType: 2,
     })
   },
 
+
+//绑定手机号登记
   formSubmit2:function(e){
       console.log(2);
-      wx.redirectTo({
-        url: '../../photo/photo'
+      console.log(e.detail.value);
+      wx.navigateTo({
+        url: '../photo/photo'
       })
   },
 
-
-  formSubmit2: function (e) {
+//直接登记
+  submit: function (e) {
+    var that = this;
     console.log(3);
-    wx.redirectTo({
+    console.log(data);
+    wx.navigateTo({
       url: '../photo/photo'
     })
   },
 
 
-   switchChange: function (e) {
+  switchChange: function (e) {
     console.log('switch1 发生 change 事件，携带值为', e.detail.value)
   },
+
+  addTemporaryUser:function(){
+    var that = this
+    that.setData({
+      loginType:3,
+    })
+  }
+
+
 
 
   

@@ -1,0 +1,75 @@
+/* pages/login/login.wxss */
+
+.top_section{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 28rpx;
+  color: #333;
+  padding: 36rpx;
+  background-color: #fff;
+
+}
+
+.psection{
+    color: #ccc;
+}
+
+.phone_area{
+  margin-top: 20rpx;
+  background-color: #fff;
+  
+}
+
+.addTitle-text{
+ width: 150rpx;
+}
+
+.addTitle-input{
+  flex: 2; 
+  padding: 20rpx;
+  font-size: 28rpx;
+}
+.addTitle-button{
+  flex: 1;
+  font-size: 26rpx;
+  border-left:1rpx solid #e2dfdf;
+  padding-left:20rpx;
+  color: #42AE3C;
+}
+
+.addTitle-pancel{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 32rpx;
+  background-color: #fff;
+  border-bottom:1px #eee solid;
+}
+
+.addTitle-pancelNoBoder{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 32rpx;
+  background-color: #fff;
+}
+
+.verify_code{
+  font-size: 28rpx;
+  color: #42AE3C;
+  margin-right: 40rpx;
+  border: none !important;
+}
+
+.cb_self{
+  display: flex;
+  margin-right: 40rpx;
+  padding: 10rpx;
+}
+
+.temporary_user{
+  margin-left: 40rpx;
+  font-size: 28rpx;
+}

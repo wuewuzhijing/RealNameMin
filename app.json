@@ -1,0 +1,21 @@
+{
+  "pages":[
+    "pages/login/login",
+    "pages/photo/photo",
+    "pages/index/index",
+    "pages/logs/logs"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "实名住",
+    "navigationBarTextStyle":"black"
+  },
+  "networkTimeout": {
+    "request": 30000,
+    "connectSocket": 30000,
+    "uploadFile": 30000,
+    "downloadFile": 30000
+  },
+  "debug": true
+}

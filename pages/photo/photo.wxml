@@ -1,0 +1,9 @@
+<!--pages/login/login.wxml-->
+<camera id="myCamera" class="camera" device-position="back" flash="auto" >
+ {{cameraContext}}
+</camera>  
+  
+<button  bindtap="startTakePhoto">拍照</button>
+
+<image class= "show-image" mode="aspectFitf" src="{{src}}"></image>
+

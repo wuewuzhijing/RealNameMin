@@ -34,8 +34,8 @@ Page({
       })
     }
 
-
   },
+
   startTakePhoto: function () {
     var that = this;
     console.log(123456);
@@ -44,7 +44,7 @@ Page({
       success: function (res) {
         console.log(res);
         that.setData({
-          src: res.tempImagePath 
+          // src: res.tempImagePath 
         })
 
       },
@@ -57,46 +57,16 @@ Page({
   
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-    console.log(132);
-  
-  },
+  again:function(){
+    // console.log(12)
+    // wx.showToast({
+    //   title: '25',
+    // })
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-  
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-  
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-  
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-  
+    wx.navigateBack({
+      delta: 1
+    })
   }
+
+
 })

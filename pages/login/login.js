@@ -1,5 +1,6 @@
 // pages/login/login.js
 var util = require("../../utils/util.js")
+var net = require("../../utils/net.js")
 Page({
 
   /**
@@ -13,10 +14,15 @@ Page({
     loginType: "0",
     switchType: 2,
     imageUrl:"../../images/icon/temporary_user.png",
+    countdown:60,
+    last_time:10,
+    hotelId:"B335C79F2B7748A49DCF962BDBC8D220",
+    hotelName:"",
   
+    userId:"",
     name:"刘阳",
-    phone:"158204808434",
-    idcard:"421222198910262830",
+    mobile:"",
+    ident:"421222198910262830",
   },
 
   /**
@@ -25,6 +31,8 @@ Page({
   onLoad: function (options) {
     var that = this;
     that.login();
+    net.getHotel(that.data.hotelId , that);
+    that.settimeTotal();
   },
 
   login: function () {
@@ -39,14 +47,15 @@ Page({
             success: res => {
               if (res.authSetting['scope.userInfo']) {
                 // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-                that.getUserInfo();
+                console.log(that)
+                that.getUser();
               } else {
                 console.log("获取用户信息授权失败")
                 if (!res.authSetting['scope.userInfo']) {
                   wx.authorize({
                     scope: 'scope.userInfo',
                     success() {
-                      that.getUserInfo();
+                      that.getUser();
                     },
                     fail() {
                       util.checkSettingStatu('scope.userInfo');
@@ -62,12 +71,13 @@ Page({
     })
   },
 
-  //获取用户信息
-  getUserInfo: function () {
+  //获取用户
+  getUser: function () {
     let that = this;
     wx.getUserInfo({
       success: res => {
         // 可以将 res 发送给后台解码出 unionId
+        console.log("获取用户信息成功")
         that.data.openidParms.encryptedData = res.encryptedData;
         that.data.openidParms.iv = res.iv;
         that.data.openidParms.appId = util.appId;
@@ -75,13 +85,18 @@ Page({
         let info = JSON.stringify(that.globalData);
         console.log(info)
 
-        that.getOpenId(that.data.openidParms);
+        that.getOpenId("that.data.openidParms");
 
         // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
         // 所以此处加入 callback 以防止这种情况
         // if (this.userInfoReadyCallback) {
         //   this.userInfoReadyCallback(res)
         // }
+      },fail:function(){
+        console.log("获取用户信息失败")
+        that.setData({
+          loginType: "3"
+        })
       }
     })
   },
@@ -111,13 +126,15 @@ Page({
         that.getUserId(res);
       },
       fail: function () {
-        wx.hideLoading();
         console.log("获取openid失败")
+        that.setData({
+          loginType: "3"
+        })
       }
     })
   },
 
-  //获取userid
+  //获取userid , 应该包含基本的用户信息
   getUserId: function (res) {
     var that = this;
     util.getQuery('user/getUserByInvoiceOpenId',
@@ -125,57 +142,133 @@ Page({
       function success(res) {
         console.log("获取userid成功")
         if (res.data.userId) {
-          // 获取用户信息
-          // that.globalData.userInfo.userId = res.data.userId
-          // that.globalData.userInfo.userId = "567"
-          // that.getUserTitleList(that.globalData.userInfo.userId);
-          that.getUserInfo(res.data.userId);
+          if (res.data.mobile == "" || res.data.mobile == null){
+            that.setData({
+              userId: res.data.userId,
+              ident: res.data.ident,
+              loginType: "3"  // 填写手机号
+            })
+          } else if (res.data.ident == "" || res.data.ident == null || res.data.identName == "" || res.data.identName == null){
+            that.setData({
+              userId: res.data.userId,
+              loginType: "2"  // 填写身份信息
+            })
+          }else{
+            that.setData({
+              userId: res.data.userId,
+              ident: res.data.ident,
+              name:res.data.identName,
+              loginType: "1"  // 已有信息
+            })
+          }
+         
+        }else{
+          that.setData({
+            loginType: "3" 
+          })
         }
-
       },
       function fail(res) {
-        console.log("获取userid失败")
+        console.log("获取userid失败");
+        that.setData({
+          loginType: "3"
+        })
       })
   },
 
-  getUserInfo:function(userId){
-    var that = this ;
-    that.setData({
-      loginType:"1"  // 类型一，填写手机号
-    })
 
-  },
+  // // 获取user数据
+  // getUserData:function(userId){
+  //   var that = this ;
+  //   that.setData({
+  //     loginType:"3"  // 类型一，填写手机号
+  //   })
 
-
-
-//获取验证码
-  getVerifyCode:function(e){
-    this.setData({
-      codeState:true,
-      verifyCodeText:"60秒后重新获取"
-    })
-  },
+  // },
 
 
-//提交手机信息
-  formSubmit:function(e){
+
+// //获取验证码
+//   getVerifyCode:function(e){
+//     var that = this;
+//     console.log(that.data.phone);
+   
+//   },
+
+
+//提交手机/验证码信息
+  formSubmit:function (e){
     var that = this;
-    console.log(3);
-    console.log(e.detail.value);
-    that.setData({
-      commitState: false,
-      loginType: 2,
-    })
+    var datas = e.detail.value;
+    if (e.detail.target.id == "getCode"){
+      if (datas.mobile == ""){
+        wx.showToast({
+          title: '手机号不能为空',
+          image: ""
+        })
+      }else{
+        that.sendVerifyCode(datas.mobile);
+      }
+    
+    
+    } else if (e.detail.target.id == "comminPhone"){
+      console.log(2);
+      if (datas.mobile == "") {
+        wx.showToast({
+          title: '手机号不能为空',
+          icon: "loading"
+        })
+        return;
+      }
+      if (datas.inputVerifyCode == "") {
+        wx.showToast({
+          title: '效验码不能为空',
+          icon: "loading"
+        })
+        return;
+      }
+      net.updateUserPnone(that.data.userId, datas.mobile, datas.inputVerifyCode,that);
+    }
   },
+
+
+
+  sendVerifyCode:function(mobile){
+    var that = this;
+    util.getQuery('user/sendVerifyCode',
+      {
+        mobile: mobile
+      },
+      "加载中",
+      function success(res) {
+        that.setData({
+          codeState: true,
+          verifyCodeText: that.data.countdown + "秒后重新获取"
+        })
+        that.settime();
+      }, function fail(res) {
+        wx.showToast({
+          title: '获取效验码失败',
+          icon: "loading"
+        })
+      })
+  },
+
+
 
 
 //绑定手机号登记
   formSubmit2:function(e){
-      console.log(2);
-      console.log(e.detail.value);
-      wx.navigateTo({
-        url: '../photo/photo'
-      })
+    var that = this;
+    var datas = e.detail.value;
+
+    console.log(2);
+    that.setData({
+      commitState: false,
+    })
+    wx.navigateTo({
+      url: '../photo/photo'
+    })
   },
 
 //直接登记
@@ -198,6 +291,50 @@ Page({
     that.setData({
       loginType:3,
     })
+  },
+
+  settime:function () {
+    var that = this;
+    if (that.data.countdown == 0) {
+      that.setData({
+        codeState: false,
+        verifyCodeText: "获取验证码"
+      })
+      that.data.countdown = 60;
+      return;
+    } else {
+      that.setData({
+        verifyCodeText: that.data.countdown + "秒后重新获取"
+      })
+      that.data.countdown--;
+    }
+    setTimeout(function () {
+      that.settime()
+    }
+      , 1000)
+
+  },
+
+  settimeTotal: function () {
+    var that = this;
+    if (that.data.last_time == 0) {
+      that.setData({
+        last_time: that.data.last_time,
+        loginType: "4"
+      })
+      that.data.last_time = 180;
+      return;
+    } else {
+      that.setData({
+        last_time: that.data.last_time,
+      })
+      that.data.last_time--;
+    }
+    setTimeout(function () {
+      that.settimeTotal()
+    }
+      , 1000)
+
   }
 
 

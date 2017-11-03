@@ -6,6 +6,8 @@ Page({
    */
   data: {
     cameraContext:{},
+    identName: "刘阳",
+    ident: "421222198910262830",
   },
 
   /**
@@ -42,11 +44,11 @@ Page({
     that.cameraContext.takePhoto({
       quality:"normal",
       success: function (res) {
-        console.log(res);
-        that.setData({
-          // src: res.tempImagePath 
-        })
-
+        console.log(res.tempImagePath);
+        that.getBase64Image(res.tempImagePath);
+        // that.setData({
+        //   // src: res.tempImagePath 
+        // })
       },
       fail: function () {
         wx.showLoading({
@@ -55,6 +57,52 @@ Page({
       },
      });
   
+  },
+
+
+  // 转base64
+  getBase64Image:function(img) {  
+    // var canvas = document.createElement("canvas");  
+    // canvas.width = img.width;  
+    // canvas.height = img.height;  
+    // var ctx = canvas.getContext("2d");  
+    // ctx.drawImage(img, 0, 0, img.width, img.height);  
+    // var ext = img.src.substring(img.src.lastIndexOf(".") + 1).toLowerCase();  
+    // var dataURL = canvas.toDataURL("image/" + ext);  
+
+    // that.identRecognize(that.data.identName, that.data.ident, dataURL);
+    // wx.base64ToArrayBuffer(base64)
+
+    console.log(222);
+    var base64 = wx.arrayBufferToBase64(img)
+    console.log(base64);
+  },
+
+
+  identRecognize: function (ident, identName, pic) {
+    var that = this;
+    util.getQuery('police/checkIdentAngPic',
+    {
+      ident:"",
+      identName:"",
+      pic:""
+    },
+      "加载中",
+      function success(res) {
+        console.log("身份校验正确");
+        that.setData({
+          ident: data.ident,
+          identName: data.identName
+        })
+        wx.navigateTo({
+          url: '../photo/photo'
+        })
+      }, function fail(res) {
+        wx.showToast({
+          title: '身份信息有误',
+          icon: "loading"
+        })
+      })
   },
 
   again:function(){
@@ -66,6 +114,9 @@ Page({
     wx.navigateBack({
       delta: 1
     })
+
+
+
   }
 
 

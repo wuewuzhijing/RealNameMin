@@ -15,12 +15,12 @@ Page({
     switchType: 2,
     imageUrl:"../../images/icon/temporary_user.png",
     countdown:60,
-    last_time:10,
+    last_time:180,
     hotelId:"B335C79F2B7748A49DCF962BDBC8D220",
     hotelName:"",
   
     userId:"",
-    name:"刘阳",
+    identName:"刘阳",
     mobile:"",
     ident:"421222198910262830",
   },
@@ -85,7 +85,7 @@ Page({
         let info = JSON.stringify(that.globalData);
         console.log(info)
 
-        that.getOpenId("that.data.openidParms");
+        that.getOpenId(that.data.openidParms);
 
         // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
         // 所以此处加入 callback 以防止这种情况
@@ -157,7 +157,7 @@ Page({
             that.setData({
               userId: res.data.userId,
               ident: res.data.ident,
-              name:res.data.identName,
+              identName:res.data.identName,
               loginType: "1"  // 已有信息
             })
           }
@@ -204,12 +204,11 @@ Page({
       if (datas.mobile == ""){
         wx.showToast({
           title: '手机号不能为空',
-          image: ""
+          icon: "loading"
         })
       }else{
         that.sendVerifyCode(datas.mobile);
       }
-    
     
     } else if (e.detail.target.id == "comminPhone"){
       console.log(2);
@@ -257,7 +256,7 @@ Page({
 
 
 
-//绑定手机号登记
+//绑定手机号登记,需要先验证姓名跟身份证是否匹配
   formSubmit2:function(e){
     var that = this;
     var datas = e.detail.value;
@@ -266,9 +265,46 @@ Page({
     that.setData({
       commitState: false,
     })
-    wx.navigateTo({
-      url: '../photo/photo'
-    })
+
+    if (datas.identName == "") {
+      wx.showToast({
+        title: '姓名不能为空',
+        icon: "loading"
+      })
+      return;
+    }
+
+    if (datas.ident == "") {
+      wx.showToast({
+        title: '身份证号不能为空',
+        icon: "loading"
+      })
+      return;
+    }
+
+    that.checkIdent(datas);
+   
+  },
+
+  checkIdent:function(data){
+    var that = this;
+    util.getQuery('police/checkIdent', data,
+      "加载中",
+      function success(res) {
+        console.log("身份校验正确");
+        that.setData({
+          ident: data.ident,
+          identName: data.identName
+        })
+        wx.navigateTo({
+          url: '../photo/photo'
+        })
+      }, function fail(res) {
+        wx.showToast({
+          title: '身份信息有误',
+          icon: "loading"
+        })
+      })
   },
 
 //直接登记
@@ -289,6 +325,9 @@ Page({
   addTemporaryUser:function(){
     var that = this
     that.setData({
+      ident: "",
+      identName: "",
+      mobile:"",
       loginType:3,
     })
   },

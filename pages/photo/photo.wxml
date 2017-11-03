@@ -1,22 +1,12 @@
 <!--pages/login/login.wxml-->
-
-
-
-
-
     <camera id="myCamera" class="camera" device-position="front" flash="auto" >
       <cover-view class='cover_view'>
 
-        <cover-image class='cover_top'></cover-image>
-        <cover-view class='cover_middle' >再试一次</cover-view>
+        <cover-image class='cover_top' ></cover-image>
+        <cover-view class='cover_middle' bindtap="startTakePhoto">拍照</cover-view>
         <cover-view class='cover_bottom'  catchtap='again' >再试一次</cover-view>
         <!-- <cover-image src='../../images/icon/temporary_user.png'></cover-image> -->
-      
       </cover-view>
     </camera>  
-
    
-
-    <button  bindtap="startTakePhoto">拍照</button>
-
     <image class= "show-image" mode="aspectFitf" src="{{src}}"></image> 

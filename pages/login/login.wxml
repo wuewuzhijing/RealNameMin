@@ -30,12 +30,12 @@
     <view class='phone_area'>
       <view class="addTitle-pancel" >
         <text class='conmm_text addTitle-text'>姓名</text>
-        <input  name="identName" value="{{taxNo}}" placeholder-class="psection" class="addTitle-input" 
+        <input  name="identName" placeholder-class="psection" class="addTitle-input"  value='{{identName}}'
         placeholder="请输入真实姓名" />
       </view>
       <view class="addTitle-pancel" >
         <text class='conmm_text addTitle-text'>身份证号</text>
-        <input  name="ident" value="{{taxNo}}" placeholder-class="psection" class="addTitle-input" 
+        <input  name="ident" placeholder-class="psection" class="addTitle-input"  value='{{ident}}'
         placeholder="请输入身份证号" />
       </view>
        <view class="addTitle-pancelNoBoder" wx:if="{{switchType == 2}}">
@@ -55,11 +55,11 @@
       </view>
       <view class="addTitle-pancel" >
         <text class='conmm_text addTitle-text'>身份证号</text>
-        <text class='addTitle-input'>{{phone}}</text>
+        <text class='addTitle-input'>{{ident}}</text>
       </view>
        <view class="addTitle-pancelNoBoder" wx:if="{{switchType == 2}}">
         <text class='conmm_text addTitle-text'>手机号</text>
-        <text class='addTitle-input'>{{idcard}}</text>
+        <text class='addTitle-input'>{{mobile}}</text>
       </view>
     </view>
     <button class="conmm_button" type="primary" bindtap='submit'>实名登记</button>

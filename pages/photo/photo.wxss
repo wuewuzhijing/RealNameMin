@@ -1,6 +1,6 @@
 /* pages/login/login.wxss */
 page{
-  height:50%;
+  height:100%;
   width: 100%
 }
 
@@ -15,30 +15,35 @@ page{
   /* opacity: 0.6 */
 }
 
+.cover_view_dim{
+  height:100%;
+  width: 100%;
+  background-color: #fff;
+  opacity: 0.7 
+}
+
 .cover_top{
-  margin:0 auto;
-  width: 50rpx;
-  height: 50rpx;
-  src: "../../images/icon/temporary_user.png"
+  margin:120rpx auto 0 ;
+  width: 180rpx;
+  height: 180rpx;
 }
 
 .cover_middle{
-  margin:0 auto;
+  margin:90rpx auto 0 ;
   text-align: center;
-  width: 150rpx;
-  height: 50rpx;
-  background: orange;
+  font-size: 36rpx;
+  color: #fff;
 }
 
 .cover_bottom{
-  width: 220rpx;
+  width: 250rpx;
   text-align: center;
-  font-size: 32rpx;
-  padding: 10rpx 0;
+  font-size: 34rpx;
+  padding: 15rpx 0;
   position: absolute;
   left: 50%;
   bottom: 0;
-  margin-left: -100rpx;
+  margin-left: -125rpx;
   margin-bottom: 200rpx;
   color: #42AE3C;
   border: 1px solid #42AE3C;

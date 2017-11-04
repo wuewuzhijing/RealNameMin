@@ -1,12 +1,10 @@
 <!--pages/login/login.wxml-->
     <camera id="myCamera" class="camera" device-position="front" flash="auto" >
-      <cover-view class='cover_view'>
-
-        <cover-image class='cover_top' ></cover-image>
-        <cover-view class='cover_middle' bindtap="startTakePhoto">拍照</cover-view>
-        <cover-view class='cover_bottom'  catchtap='again' >再试一次</cover-view>
+      <cover-view class='{{isDim?"cover_view_dim":"cover_view"}}'>
+        <cover-image class='cover_top' src='{{recognizeIcon}}' wx:if="{{tipState}}"></cover-image>
+        <cover-view class='cover_middle' bindtap="startTakePhoto" wx:if="{{tipState}}">{{middleText}}</cover-view>
+        <cover-view class='cover_bottom'  catchtap='startTakePhoto' wx:if="{{buttonState}}" >{{phoneText}}</cover-view>
         <!-- <cover-image src='../../images/icon/temporary_user.png'></cover-image> -->
       </cover-view>
     </camera>  
    
-    <image class= "show-image" mode="aspectFitf" src="{{src}}"></image> 

@@ -18,11 +18,12 @@ Page({
     last_time:180,
     hotelId:"B335C79F2B7748A49DCF962BDBC8D220",
     hotelName:"",
-  
+    self:true,
     userId:"",
-    identName:"刘阳",
+    identName:"",
     mobile:"",
-    ident:"421222198910262830",
+    ident:"",
+    inputIdent:""  //实名登记时输入的身份证号
   },
 
   /**
@@ -33,6 +34,16 @@ Page({
     that.login();
     net.getHotel(that.data.hotelId , that);
     that.settimeTotal();
+  },
+
+  onShow: function () { 
+    //  生命周期函数--监听页面显示 
+    var that = this;
+    // if (loginType == 2){
+      // that.setData({
+      //   loginType: "3"
+      // })
+    // }
   },
 
   login: function () {
@@ -81,9 +92,6 @@ Page({
         that.data.openidParms.encryptedData = res.encryptedData;
         that.data.openidParms.iv = res.iv;
         that.data.openidParms.appId = util.appId;
-
-        let info = JSON.stringify(that.globalData);
-        console.log(info)
 
         that.getOpenId(that.data.openidParms);
 
@@ -137,30 +145,41 @@ Page({
   //获取userid , 应该包含基本的用户信息
   getUserId: function (res) {
     var that = this;
-    util.getQuery('user/getUserByInvoiceOpenId',
-      { openIdInvoiceLittleApp: res.data.openId, nickname: res.data.nickname, avatar: res.data.avatarUrl }, "",
+    util.getQuery('user/getUserByPoliceOpenId',
+      { openIdPoliceLittleApp: res.data.openId, nickname: res.data.nickname, avatar: res.data.avatarUrl }, "",
       function success(res) {
-        console.log("获取userid成功")
+        console.log(res)
         if (res.data.userId) {
+          that.setData({
+            mobile: res.data.mobile,  // 
+            userId: res.data.userId
+          })
+
           if (res.data.mobile == "" || res.data.mobile == null){
             that.setData({
-              userId: res.data.userId,
-              ident: res.data.ident,
-              loginType: "3"  // 填写手机号
-            })
-          } else if (res.data.ident == "" || res.data.ident == null || res.data.identName == "" || res.data.identName == null){
-            that.setData({
-              userId: res.data.userId,
-              loginType: "2"  // 填写身份信息
+              loginType: "3"  // 去填写手机号
             })
           }else{
-            that.setData({
-              userId: res.data.userId,
-              ident: res.data.ident,
-              identName:res.data.identName,
-              loginType: "1"  // 已有信息
-            })
+            //获取用户列表再做一次判断
+            that.getUserContacters();
           }
+
+          //  else if (res.data.ident == "" || res.data.ident == null || res.data.identName == "" || res.data.identName == null){
+          //   that.setData({
+          //     userId: res.data.userId,
+          //     mobile: res.data.mobile,
+          //     loginType: "2"  // 去填写身份信息
+          //   })
+          // }else{
+          //   that.setData({
+          //     userId: res.data.userId,
+          //     ident: res.data.ident,
+          //     identName:res.data.identName,
+          //     loginType: "1"  // 已有信息
+          //   })
+          // }
+
+         
          
         }else{
           that.setData({
@@ -173,6 +192,52 @@ Page({
         that.setData({
           loginType: "3"
         })
+      })
+  },
+
+
+  //获取联系人列表
+  getUserContacters: function () {
+    var that = this;
+    util.getQuery('user/getUserContacters',
+      {
+        userId: that.data.userId
+      },
+      "加载中",
+      function success(res) {
+        console.log(res);
+        var list = res.data.list;
+        if (list && list.length > 0){
+          for (var i = 0; i < list.length; i++) {
+            if (1 == list[i].contacterType){
+              that.setData({
+                ident: list[i].ident,
+                identName: list[i].identName,
+                mobile: list[i].phone,
+                loginType: "1"  // 已有信息
+              })
+              console.log(1);
+            }
+          }
+
+          if (that.data.ident == "" || that.data.ident == null){
+            that.setData({
+              loginType: "3"  // 去填写信息
+            })
+          }
+
+          console.log(1);
+          console.log(that.data.ident);
+
+        }else{
+          console.log(0);
+        }
+        // that.setData({
+        //   codeState: true,
+        //   verifyCodeText: that.data.countdown + "秒后重新获取"
+        // })
+      }, function fail(res) {
+        console.log(res);
       })
   },
 
@@ -231,7 +296,7 @@ Page({
   },
 
 
-
+  //获取验证码 
   sendVerifyCode:function(mobile){
     var that = this;
     util.getQuery('user/sendVerifyCode',
@@ -286,6 +351,8 @@ Page({
    
   },
 
+
+  //核对身份证跟姓名是否一致
   checkIdent:function(data){
     var that = this;
     util.getQuery('police/checkIdent', data,
@@ -297,8 +364,10 @@ Page({
           identName: data.identName
         })
         wx.navigateTo({
-          url: '../photo/photo'
+          url: '../photo/photo?ident=' + data.ident + "&identName=" + data.identName
         })
+        that.addPerson(); 
+        // that.modifyPerson();
       }, function fail(res) {
         wx.showToast({
           title: '身份信息有误',
@@ -307,19 +376,69 @@ Page({
       })
   },
 
+
+  //添加联系人
+  addPerson: function () {
+    console.log("添加联系人开始");
+    var that = this;
+    util.getQuery('user/addContacter',
+    {
+      hotelId: that.data.hotelId,
+      userId: that.data.userId,
+      phone: that.data.mobile,
+      identName: that.data.identName,
+      contacterType: that.data.self?"1":"2",
+      ident: that.data.ident
+    }
+    ,"加载中",
+      function success(res) {
+        console.log("添加联系人成功");
+        console.log(res);
+      }, function fail(res) {
+        console.log("添加联系人失败");
+        console.log(res);
+      })
+  },
+
+
+  //修改联系人
+  modifyPerson: function () {
+    var that = this;
+    util.getQuery('user/updateContacter',
+      {
+        hotelId: that.data.hotelId,
+        userId: that.data.userId,
+        phone: that.data.mobile,
+        contactersId: "c2646de56ed3447fb55b0ec77f633f31",
+        identName: that.data.identName,
+        contacterType: that.data.self ? "1" : "2",
+        ident: that.data.ident
+      }
+      , "加载中",
+      function success(res) {
+        console.log("修改联系人成功");
+        console.log(res);
+      }, function fail(res) {
+        console.log("修改联系人失败");
+        console.log(res);
+      })
+  },
+
 //直接登记
   submit: function (e) {
     var that = this;
-    console.log(3);
-    console.log(data);
     wx.navigateTo({
-      url: '../photo/photo'
+      url: '../photo/photo?ident=' + that.data.ident + "&identName=" + that.data.identName
     })
   },
 
 
   switchChange: function (e) {
+    var that = this
     console.log('switch1 发生 change 事件，携带值为', e.detail.value)
+    that.setData({
+      self:e.detail.value
+    })
   },
 
   addTemporaryUser:function(){
@@ -374,10 +493,7 @@ Page({
     }
       , 1000)
 
-  }
+  },
 
-
-
-
-  
 })
+

@@ -40,7 +40,7 @@
       </view>
        <view class="addTitle-pancelNoBoder" wx:if="{{switchType == 2}}">
         <text class='conmm_text addTitle-text' >设为本人</text>
-        <switch class='cb_self'  name="self" checked="true" bindchange="switchChange"></switch>
+        <switch class='cb_self'  name="self" checked="{{self}}" bindchange="switchChange"></switch>
       </view>
     </view>
     <button class="conmm_button" type="primary" form-type='submit'>实名登记</button>

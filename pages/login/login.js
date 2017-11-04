@@ -407,7 +407,8 @@ Page({
       ident: "",
       identName: "",
       mobile:"",
-      loginType:3,
+      loginType:2,
+      self:false
     })
   },
 

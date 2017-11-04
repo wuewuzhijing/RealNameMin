@@ -39,11 +39,11 @@ Page({
   onShow: function () { 
     //  生命周期函数--监听页面显示 
     var that = this;
-    // if (loginType == 2){
-      // that.setData({
-      //   loginType: "3"
-      // })
-    // }
+    if (that.data.ident.length > 0){
+      that.setData({
+        loginType: "1"
+      })
+    }
   },
 
   login: function () {
@@ -154,7 +154,6 @@ Page({
             mobile: res.data.mobile,  // 
             userId: res.data.userId
           })
-
           if (res.data.mobile == "" || res.data.mobile == null){
             that.setData({
               loginType: "3"  // 去填写手机号
@@ -163,24 +162,6 @@ Page({
             //获取用户列表再做一次判断
             that.getUserContacters();
           }
-
-          //  else if (res.data.ident == "" || res.data.ident == null || res.data.identName == "" || res.data.identName == null){
-          //   that.setData({
-          //     userId: res.data.userId,
-          //     mobile: res.data.mobile,
-          //     loginType: "2"  // 去填写身份信息
-          //   })
-          // }else{
-          //   that.setData({
-          //     userId: res.data.userId,
-          //     ident: res.data.ident,
-          //     identName:res.data.identName,
-          //     loginType: "1"  // 已有信息
-          //   })
-          // }
-
-         
-         
         }else{
           that.setData({
             loginType: "3" 
@@ -196,7 +177,7 @@ Page({
   },
 
 
-  //获取联系人列表
+  //获取联系人列表  ， 非本人的情况还未做处理
   getUserContacters: function () {
     var that = this;
     util.getQuery('user/getUserContacters',
@@ -231,35 +212,14 @@ Page({
 
         }else{
           console.log(0);
+          that.setData({
+            loginType: "3"  // 去填写信息
+          })
         }
-        // that.setData({
-        //   codeState: true,
-        //   verifyCodeText: that.data.countdown + "秒后重新获取"
-        // })
       }, function fail(res) {
         console.log(res);
       })
   },
-
-
-  // // 获取user数据
-  // getUserData:function(userId){
-  //   var that = this ;
-  //   that.setData({
-  //     loginType:"3"  // 类型一，填写手机号
-  //   })
-
-  // },
-
-
-
-// //获取验证码
-//   getVerifyCode:function(e){
-//     var that = this;
-//     console.log(that.data.phone);
-   
-//   },
-
 
 //提交手机/验证码信息
   formSubmit:function (e){

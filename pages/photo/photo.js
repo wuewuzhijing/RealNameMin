@@ -58,7 +58,7 @@ Page({
     })
     console.log(123456);
     that.cameraContext.takePhoto({
-      quality:"high",
+      quality:"normal",
       success: function (res) {
         that.upload(res.tempImagePath);
         that.setData({

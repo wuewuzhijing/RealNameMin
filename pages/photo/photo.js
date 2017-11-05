@@ -72,6 +72,7 @@ Page({
   
   },
 
+//人脸认证
   upload: function (filePath) {
     var that = this;  
     wx.uploadFile({

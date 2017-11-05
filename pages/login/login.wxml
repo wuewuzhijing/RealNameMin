@@ -44,6 +44,10 @@
       </view>
     </view>
     <button class="conmm_button" type="primary" form-type='submit'>实名登记</button>
+    <view class='temporary_user' bindtap='backList' wx:if="{{backState}}">
+      <image class="icon_temporary_user"  src="{{imageUrl}}"></image>
+      <text >返回</text>
+    </view>
   </form>
 
 

@@ -9,6 +9,7 @@ Page({
   data: {
     commitState: false,
     codeState:false,
+    backState:false,
     verifyCodeText:"获取验证码",
     openidParms: {},
     loginType: "0",
@@ -40,9 +41,11 @@ Page({
     //  生命周期函数--监听页面显示 
     var that = this;
     if (that.data.ident.length > 0){
-      that.setData({
-        loginType: "1"
-      })
+      // that.setData({
+      //   loginType: "1"  //
+      // })
+      that.getUserContacters();
+      //应该是重新获取一次列表，即可自动回到联系人列表页，页数据会被刷新
     }
   },
 
@@ -103,7 +106,7 @@ Page({
       },fail:function(){
         console.log("获取用户信息失败")
         that.setData({
-          loginType: "3"
+          loginType: "2"
         })
       }
     })
@@ -136,7 +139,7 @@ Page({
       fail: function () {
         console.log("获取openid失败")
         that.setData({
-          loginType: "3"
+          loginType: "2"
         })
       }
     })
@@ -151,7 +154,6 @@ Page({
         console.log(res)
         if (res.data.userId) {
           that.setData({
-            mobile: res.data.mobile,  // 
             userId: res.data.userId
           })
           if (res.data.mobile == "" || res.data.mobile == null){
@@ -164,14 +166,14 @@ Page({
           }
         }else{
           that.setData({
-            loginType: "3" 
+            loginType: "2" 
           })
         }
       },
       function fail(res) {
         console.log("获取userid失败");
         that.setData({
-          loginType: "3"
+          loginType: "2"
         })
       })
   },
@@ -197,27 +199,22 @@ Page({
                 mobile: list[i].phone,
                 loginType: "1"  // 已有信息
               })
-              console.log(1);
             }
           }
-
           if (that.data.ident == "" || that.data.ident == null){
             that.setData({
-              loginType: "3"  // 去填写信息
+              loginType: "2"  // 去填写信息
             })
           }
-
-          console.log(1);
-          console.log(that.data.ident);
-
         }else{
-          console.log(0);
           that.setData({
-            loginType: "3"  // 去填写信息
+            loginType: "2"  // 去填写信息
           })
         }
       }, function fail(res) {
-        console.log(res);
+        that.setData({
+          loginType: "2"  // 去填写信息
+        })
       })
   },
 
@@ -408,8 +405,14 @@ Page({
       identName: "",
       mobile:"",
       loginType:2,
-      self:false
+      self:false,
+      backState: true
     })
+  },
+
+  backList:function(){
+    var that = this;
+    that.getUserContacters();
   },
 
   settime:function () {

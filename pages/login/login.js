@@ -7,24 +7,25 @@ Page({
    * 页面的初始数据
    */
   data: {
+    showModal: false,
     commitState: false,
-    codeState:false,
-    backState:false,
-    verifyCodeText:"获取验证码",
+    codeState: false,
+    backState: false,
+    verifyCodeText: "获取验证码",
     openidParms: {},
     loginType: "0",
     switchType: 2,
-    imageUrl:"../../images/icon/temporary_user.png",
-    countdown:60,
-    last_time:180,
-    hotelId:"B335C79F2B7748A49DCF962BDBC8D220",
-    hotelName:"",
-    self:true,
-    userId:"",
-    identName:"",
-    mobile:"",
-    ident:"",
-    inputIdent:""  //实名登记时输入的身份证号
+    imageUrl: "../../images/icon/temporary_user.png",
+    countdown: 60,
+    last_time: 180,
+    hotelId: "B335C79F2B7748A49DCF962BDBC8D220",
+    hotelName: "",
+    self: true,
+    userId: "",
+    contactersId:"",
+    identName: "",
+    mobile: "",
+    ident: "",
   },
 
   /**
@@ -33,14 +34,14 @@ Page({
   onLoad: function (options) {
     var that = this;
     that.login();
-    net.getHotel(that.data.hotelId , that);
+    net.getHotel(that.data.hotelId, that);
     that.settimeTotal();
   },
 
-  onShow: function () { 
+  onShow: function () {
     //  生命周期函数--监听页面显示 
     var that = this;
-    if (that.data.ident.length > 0){
+    if ((that.data.ident.length > 0 || that.data.switchType != 2) && that.data.mobile != "") {
       // that.setData({
       //   loginType: "1"  //
       // })
@@ -103,7 +104,7 @@ Page({
         // if (this.userInfoReadyCallback) {
         //   this.userInfoReadyCallback(res)
         // }
-      },fail:function(){
+      }, fail: function () {
         console.log("获取用户信息失败")
         that.setData({
           loginType: "2"
@@ -154,19 +155,20 @@ Page({
         console.log(res)
         if (res.data.userId) {
           that.setData({
-            userId: res.data.userId
+            userId: res.data.userId,
+            mobile: res.data.mobile,
           })
-          if (res.data.mobile == "" || res.data.mobile == null){
+          if (res.data.mobile == "" || res.data.mobile == null) {
             that.setData({
               loginType: "3"  // 去填写手机号
             })
-          }else{
+          } else {
             //获取用户列表再做一次判断
             that.getUserContacters();
           }
-        }else{
+        } else {
           that.setData({
-            loginType: "2" 
+            loginType: "2"
           })
         }
       },
@@ -190,23 +192,21 @@ Page({
       function success(res) {
         console.log(res);
         var list = res.data.list;
-        if (list && list.length > 0){
-          for (var i = 0; i < list.length; i++) {
-            if (1 == list[i].contacterType){
-              that.setData({
-                ident: list[i].ident,
-                identName: list[i].identName,
-                mobile: list[i].phone,
-                loginType: "1"  // 已有信息
-              })
-            }
+        if (list && list.length > 0) {  // 目前只保存一个人
+          for (var i = 0; i < 1; i++) {
+            that.setData({
+              ident: list[i].ident,
+              identName: list[i].identName,
+              contactersId: list[i].contactersId,
+              loginType: "1"  // 已有信息
+            })
           }
-          if (that.data.ident == "" || that.data.ident == null){
+          if (that.data.ident == "" || that.data.ident == null) {
             that.setData({
               loginType: "2"  // 去填写信息
             })
           }
-        }else{
+        } else {
           that.setData({
             loginType: "2"  // 去填写信息
           })
@@ -218,21 +218,21 @@ Page({
       })
   },
 
-//提交手机/验证码信息
-  formSubmit:function (e){
+  //提交手机/验证码信息
+  formSubmit: function (e) {
     var that = this;
     var datas = e.detail.value;
-    if (e.detail.target.id == "getCode"){
-      if (datas.mobile == ""){
+    if (e.detail.target.id == "getCode") {
+      if (datas.mobile == "") {
         wx.showToast({
           title: '手机号不能为空',
           icon: "loading"
         })
-      }else{
+      } else {
         that.sendVerifyCode(datas.mobile);
       }
-    
-    } else if (e.detail.target.id == "comminPhone"){
+
+    } else if (e.detail.target.id == "comminPhone") {
       console.log(2);
       if (datas.mobile == "") {
         wx.showToast({
@@ -248,13 +248,13 @@ Page({
         })
         return;
       }
-      net.updateUserPnone(that.data.userId, datas.mobile, datas.inputVerifyCode,that);
+      net.updateUserPnone(that.data.userId, datas.mobile, datas.inputVerifyCode, that);
     }
   },
 
 
   //获取验证码 
-  sendVerifyCode:function(mobile){
+  sendVerifyCode: function (mobile) {
     var that = this;
     util.getQuery('user/sendVerifyCode',
       {
@@ -278,8 +278,8 @@ Page({
 
 
 
-//绑定手机号登记,需要先验证姓名跟身份证是否匹配
-  formSubmit2:function(e){
+  //绑定手机号登记,需要先验证姓名跟身份证是否匹配
+  formSubmit2: function (e) {
     var that = this;
     var datas = e.detail.value;
 
@@ -305,12 +305,12 @@ Page({
     }
 
     that.checkIdent(datas);
-   
+
   },
 
 
   //核对身份证跟姓名是否一致
-  checkIdent:function(data){
+  checkIdent: function (data) {
     var that = this;
     util.getQuery('police/checkIdent', data,
       "加载中",
@@ -323,8 +323,16 @@ Page({
         wx.navigateTo({
           url: '../photo/photo?ident=' + data.ident + "&identName=" + data.identName
         })
-        that.addPerson(); 
-        // that.modifyPerson();
+
+        if (data.self) {  //设为本人才需要保存或修改
+          if (that.data.contactersId) { 
+            console.log("修改中" + that.data.contactersId)
+            that.modifyPerson();   // 修改联系人
+          } else {
+            that.addPerson();  //按现在的需求，联系人实际上只能添加一次
+          }
+        }
+        
       }, function fail(res) {
         wx.showToast({
           title: '身份信息有误',
@@ -339,15 +347,15 @@ Page({
     console.log("添加联系人开始");
     var that = this;
     util.getQuery('user/addContacter',
-    {
-      hotelId: that.data.hotelId,
-      userId: that.data.userId,
-      phone: that.data.mobile,
-      identName: that.data.identName,
-      contacterType: that.data.self?"1":"2",
-      ident: that.data.ident
-    }
-    ,"加载中",
+      {
+        hotelId: that.data.hotelId,
+        userId: that.data.userId,
+        phone: that.data.mobile,
+        identName: that.data.identName,
+        contacterType: that.data.self ? "1" : "2",
+        ident: that.data.ident
+      }
+      , "加载中",
       function success(res) {
         console.log("添加联系人成功");
         console.log(res);
@@ -366,7 +374,8 @@ Page({
         hotelId: that.data.hotelId,
         userId: that.data.userId,
         phone: that.data.mobile,
-        contactersId: "c2646de56ed3447fb55b0ec77f633f31",
+        contactersId: that.data.contactersId,
+        // contactersId:"c2646de56ed3447fb55b0ec77f633f31" ,
         identName: that.data.identName,
         contacterType: that.data.self ? "1" : "2",
         ident: that.data.ident
@@ -381,7 +390,7 @@ Page({
       })
   },
 
-//直接登记
+  //直接登记
   submit: function (e) {
     var that = this;
     wx.navigateTo({
@@ -394,28 +403,29 @@ Page({
     var that = this
     console.log('switch1 发生 change 事件，携带值为', e.detail.value)
     that.setData({
-      self:e.detail.value
+      self: e.detail.value
     })
   },
 
-  addTemporaryUser:function(){
+  addTemporaryUser: function () {
     var that = this
     that.setData({
       ident: "",
       identName: "",
-      mobile:"",
-      loginType:2,
-      self:false,
-      backState: true
+      mobile: "",
+      loginType: 2,
+      self: false,
+      switchType: 0
+      // backState: true
     })
   },
 
-  backList:function(){
+  backList: function () {
     var that = this;
     that.getUserContacters();
   },
 
-  settime:function () {
+  settime: function () {
     var that = this;
     if (that.data.countdown == 0) {
       that.setData({
@@ -458,6 +468,36 @@ Page({
       , 1000)
 
   },
+
+  preventTouchMove: function () { }, 
+
+  hideDialog: function () { 
+    this.setData({
+       showModal: false,
+    }) 
+  },
+
+  editUser:function(){
+    this.setData({ showModal: true })
+  },
+
+  modiryPhone:function(){
+    this.setData({
+      showModal: false,
+      loginType: "3",
+      mobile: "",
+    }) 
+    
+  },
+
+  modifyUser:function(){
+    this.setData({
+      showModal: false,
+      loginType: "2",
+      self: true,
+      switchType: 2
+    }) 
+  }
 
 })
 

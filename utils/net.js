@@ -28,12 +28,19 @@ function updateUserPnone(userId, mobile, verityCode, obj ){
     "加载中",
     function success(res) {
       if (res.data) {
-        obj.setData({
-          commitState: false,
-          loginType: 2,
-          countdown: 0 ,//结束倒计时
-          mobile: mobile
-        });
+        if (obj.data.ident == ""){ 
+          obj.setData({
+            commitState: false,
+            loginType: 2,
+            mobile: mobile
+          });
+        }else{
+          obj.setData({
+            commitState: false,
+            loginType: 1,
+            mobile: mobile
+          });
+        }
       }
     }, function fail(res) {
       wx.showToast({

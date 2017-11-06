@@ -1,26 +1,23 @@
 <!--pages/login/login.wxml-->
 <view class='container'>
-  <view class='top_section' > 
+  <view class='top_section'>
     <text>{{hotelName}}</text>
     <view>
       <text>有效时间 </text>
       <text style='color:#42AE3C'>:{{last_time}}秒 </text>
     </view>
-  </view> 
+  </view>
 
   <form bindsubmit="formSubmit" wx:if="{{loginType == 3}}">
     <view class='phone_area'>
-      <view class="addTitle-pancel" >
+      <view class="addTitle-pancel">
         <text class='conmm_text addTitle-text'>手机号</text>
-        <input  name="mobile" value="{{taxNo}}" placeholder-class="psection" class="addTitle-input" 
-        placeholder="请输入手机号"  value='{{mobile}}'/>
+        <input name="mobile" value="{{taxNo}}" placeholder-class="psection" class="addTitle-input" placeholder="请输入手机号" value='{{mobile}}' />
       </view>
       <view class="addTitle-pancelNoBoder">
         <text class='conmm_text addTitle-text'>验证码</text>
-        <input  name="inputVerifyCode" value="{{taxNo}}" placeholder-class="psection" class="addTitle-input" 
-        placeholder="请输入验证码" />
-        <button class='verify_code' id='getCode' type="primary" plain="true" disabled="{{codeState}}" 
-         form-type='submit'>{{verifyCodeText}}</button>
+        <input name="inputVerifyCode" value="{{taxNo}}" placeholder-class="psection" class="addTitle-input" placeholder="请输入验证码" />
+        <button class='verify_code' id='getCode' type="primary" plain="true" disabled="{{codeState}}" form-type='submit'>{{verifyCodeText}}</button>
       </view>
     </view>
     <button class="conmm_button" id='comminPhone' type="primary" form-type='submit' disabled="{{commitState}}">提交</button>
@@ -28,53 +25,60 @@
 
   <form bindsubmit="formSubmit2" wx:if="{{loginType == 2}}">
     <view class='phone_area'>
-      <view class="addTitle-pancel" >
+      <view class="addTitle-pancel">
         <text class='conmm_text addTitle-text'>姓名</text>
-        <input  name="identName" placeholder-class="psection" class="addTitle-input"  value='{{identName}}'
-        placeholder="请输入真实姓名" />
+        <input name="identName" placeholder-class="psection" class="addTitle-input" value='{{identName}}' placeholder="请输入真实姓名" />
       </view>
-      <view class="addTitle-pancel" >
+      <view class="addTitle-pancel">
         <text class='conmm_text addTitle-text'>身份证号</text>
-        <input  name="ident" placeholder-class="psection" class="addTitle-input"  value='{{ident}}'
-        placeholder="请输入身份证号" />
+        <input name="ident" placeholder-class="psection" class="addTitle-input" value='{{ident}}' placeholder="请输入身份证号" />
       </view>
-       <view class="addTitle-pancelNoBoder" wx:if="{{switchType == 2}}">
-        <text class='conmm_text addTitle-text' >设为本人</text>
-        <switch class='cb_self'  name="self" checked="{{self}}" bindchange="switchChange"></switch>
+      <view class="addTitle-pancelNoBoder" wx:if="{{switchType == 2}}">
+        <text class='conmm_text addTitle-text'>设为本人</text>
+        <switch class='cb_self' name="self" checked="{{self}}" bindchange="switchChange"></switch>
       </view>
     </view>
     <button class="conmm_button" type="primary" form-type='submit'>实名登记</button>
     <view class='temporary_user' bindtap='backList' wx:if="{{backState}}">
-      <image class="icon_temporary_user"  src="{{imageUrl}}"></image>
-      <text >返回</text>
+      <image class="icon_temporary_user" src="{{imageUrl}}"></image>
+      <text>返回</text>
     </view>
   </form>
 
 
   <view wx:if="{{loginType == 1}}">
     <view class='phone_area'>
-      <view class="addTitle-pancel" >
+      <view class="addTitle-pancel">
         <text class='conmm_text addTitle-text'>姓名</text>
-        <text class='addTitle-input' >{{identName}}</text>
+        <text class='addTitle-input'>{{identName}}</text>
+        <image class="edit_user" src="{{imageUrl}}" bindtap='editUser'></image>
       </view>
-      <view class="addTitle-pancel" >
+      <view class="addTitle-pancel">
         <text class='conmm_text addTitle-text'>身份证号</text>
         <text class='addTitle-input'>{{ident}}</text>
       </view>
-       <view class="addTitle-pancelNoBoder" wx:if="{{switchType == 2}}">
+      <view class="addTitle-pancelNoBoder">
         <text class='conmm_text addTitle-text'>手机号</text>
         <text class='addTitle-input'>{{mobile}}</text>
       </view>
     </view>
     <button class="conmm_button" type="primary" bindtap='submit'>实名登记</button>
     <view class='temporary_user' bindtap='addTemporaryUser'>
-      <image class="icon_temporary_user"  src="{{imageUrl}}"></image>
-      <text >临时客人</text>
+      <image class="icon_temporary_user" src="{{imageUrl}}"></image>
+      <text>临时客人</text>
     </view>
   </view>
 
   <view wx:if="{{loginType == 4}}" style='font-size: 28rpx;color: #333;display:flex;justify-content:center;margin-top:20rpx'>
     <text>已过有效期，请重新扫码登录</text>
+  </view>
+
+  <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+  <view class="modalDlg" wx:if="{{showModal}}">
+    <button class="dialogBtn" bindtap="modifyUser"  plain="true">编辑个人信息</button>
+    <button class="dialogBtn" bindtap="modiryPhone"  plain="true">更新手机号码</button>
+    <view style='background:#999;height:10rpx'></view>
+    <button class="dialogBtn" bindtap="hideDialog"  plain="true">取消</button>
   </view>
 
 </view>

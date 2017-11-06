@@ -1,6 +1,6 @@
 /* pages/login/login.wxss */
 
-.top_section{
+.top_section {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -8,47 +8,46 @@
   color: #333;
   padding: 36rpx;
   background-color: #fff;
-
 }
 
-.psection{
-    color: #ccc;
+.psection {
+  color: #ccc;
 }
 
-.phone_area{
+.phone_area {
   margin-top: 20rpx;
   background-color: #fff;
-  
 }
 
-.addTitle-text{
- width: 150rpx;
- padding: 20rpx 0;
+.addTitle-text {
+  width: 150rpx;
+  padding: 20rpx 0;
 }
 
-.addTitle-input{
-  flex: 2; 
+.addTitle-input {
+  flex: 2;
   padding: 20rpx;
   font-size: 28rpx;
 }
-.addTitle-button{
+
+.addTitle-button {
   flex: 1;
   font-size: 26rpx;
-  border-left:1rpx solid #e2dfdf;
-  padding-left:20rpx;
-  color: #42AE3C;
+  border-left: 1rpx solid #e2dfdf;
+  padding-left: 20rpx;
+  color: #42ae3c;
 }
 
-.addTitle-pancel{
+.addTitle-pancel {
   display: flex;
   flex-direction: row;
   align-items: center;
   margin-left: 32rpx;
   background-color: #fff;
-  border-bottom:1px #eee solid;
+  border-bottom: 1px #eee solid;
 }
 
-.addTitle-pancelNoBoder{
+.addTitle-pancelNoBoder {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -57,26 +56,60 @@
   background-color: #fff;
 }
 
-.verify_code{
+.verify_code {
   font-size: 28rpx;
-  color: #42AE3C;
+  color: #42ae3c;
   margin-right: 40rpx;
   border: none !important;
 }
 
-.cb_self{
+.cb_self {
   display: flex;
   margin-right: 40rpx;
   padding: 10rpx;
 }
 
-.temporary_user{
+.temporary_user {
   margin-left: 40rpx;
   font-size: 28rpx;
 }
 
-.icon_temporary_user{
-  width:25rpx;
-  height:25rpx;
+.icon_temporary_user {
+  width: 25rpx;
+  height: 25rpx;
   margin-right: 10rpx;
+}
+
+.mask {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #000;
+  z-index: 9000;
+  opacity: 0.7;
+}
+
+.modalDlg {
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 9999;
+  background-color: #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10rpx;
+}
+
+.dialogBtn{
+  font-size: 32rpx;
+  border: none !important;
+}
+
+.edit_user{
+  width: 50rpx;
+  height: 50rpx;
+  margin-right: 40rpx;
 }

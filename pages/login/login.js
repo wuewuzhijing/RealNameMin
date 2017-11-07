@@ -15,7 +15,7 @@ Page({
     openidParms: {},
     loginType: "0",
     switchType: 2,
-    imageUrl: "../../images/icon/temporary_user.png",
+    imageUrl: "../../images/icon/addContacts.png",
     countdown: 60,
     last_time: 180,
     hotelId: "B335C79F2B7748A49DCF962BDBC8D220",
@@ -226,7 +226,7 @@ Page({
       if (datas.mobile == "") {
         wx.showToast({
           title: '手机号不能为空',
-          icon: "loading"
+          image: "../../images/icon/toast_icon.png"
         })
       } else {
         that.sendVerifyCode(datas.mobile);
@@ -237,14 +237,14 @@ Page({
       if (datas.mobile == "") {
         wx.showToast({
           title: '手机号不能为空',
-          icon: "loading"
+          image: "../../images/icon/toast_icon.png"
         })
         return;
       }
       if (datas.inputVerifyCode == "") {
         wx.showToast({
           title: '效验码不能为空',
-          icon: "loading"
+          image: "../../images/icon/toast_icon.png"
         })
         return;
       }
@@ -270,7 +270,7 @@ Page({
       }, function fail(res) {
         wx.showToast({
           title: '获取效验码失败',
-          icon: "loading"
+          image: "../../images/icon/toast_icon.png"
         })
       })
   },
@@ -291,7 +291,7 @@ Page({
     if (datas.identName == "") {
       wx.showToast({
         title: '姓名不能为空',
-        icon: "loading"
+        image: "../../images/icon/toast_icon.png"
       })
       return;
     }
@@ -299,7 +299,7 @@ Page({
     if (datas.ident == "") {
       wx.showToast({
         title: '身份证号不能为空',
-        icon: "loading"
+        image: "../../images/icon/toast_icon.png"
       })
       return;
     }
@@ -336,7 +336,7 @@ Page({
       }, function fail(res) {
         wx.showToast({
           title: '身份信息有误',
-          icon: "loading"
+          image: "../../images/icon/toast_icon.png"
         })
       })
   },

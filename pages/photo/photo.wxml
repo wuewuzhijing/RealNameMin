@@ -4,7 +4,6 @@
         <cover-image class='cover_top' src='{{recognizeIcon}}' wx:if="{{tipState}}"></cover-image>
         <cover-view class='cover_middle' bindtap="startTakePhoto" wx:if="{{tipState}}">{{middleText}}</cover-view>
         <cover-view class='cover_bottom'  catchtap='startTakePhoto' wx:if="{{buttonState}}" >{{phoneText}}</cover-view>
-        <!-- <cover-image src='../../images/icon/temporary_user.png'></cover-image> -->
       </cover-view>
     </camera>  
    

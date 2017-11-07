@@ -51,7 +51,7 @@
       <view class="addTitle-pancel">
         <text class='conmm_text addTitle-text'>姓名</text>
         <text class='addTitle-input'>{{identName}}</text>
-        <image class="edit_user" src="{{imageUrl}}" bindtap='editUser'></image>
+        <image class="edit_user" src="../../images/icon/editContacts.png" bindtap='editUser'></image>
       </view>
       <view class="addTitle-pancel">
         <text class='conmm_text addTitle-text'>身份证号</text>

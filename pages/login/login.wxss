@@ -110,6 +110,7 @@
 
 .edit_user{
   width: 50rpx;
-  height: 50rpx;
+  height: 10rpx;
+  padding: 20rpx 20rpx;
   margin-right: 40rpx;
 }

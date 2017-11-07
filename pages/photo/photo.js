@@ -24,8 +24,6 @@ Page({
       ident: options.ident
     })
     console.log("拍照启动")
-    console.log(options.identName)
-    console.log(options.ident)
   },
 
   /**
@@ -48,7 +46,6 @@ Page({
   },
 
   startTakePhoto: function () {
-
     var that = this;
     that.setData({
       tipState:true,
@@ -134,54 +131,12 @@ Page({
       },
       fail: function (error) {
         console.error(error);
-        wx.showToast({
-          title: error.daga.returnMessage,
-          icon: "loading"
-        })
+        // wx.showToast({
+        //   title: error.daga.returnMessage,
+        //   icon: "loading"
+        // })
       }
     })
   },
-
-
-  identRecognize: function (ident, identName, pic) {
-    var that = this;
-    util.getQuery('police/checkIdentAngPic',
-    {
-      ident:"",
-      identName:"",
-      pic:""
-    },
-      "加载中",
-      function success(res) {
-        console.log("身份校验正确");
-        that.setData({
-          ident: data.ident,
-          identName: data.identName
-        })
-        wx.navigateTo({
-          url: '../photo/photo'
-        })
-      }, function fail(res) {
-        wx.showToast({
-          title: '身份信息有误',
-          icon: "loading"
-        })
-      })
-  },
-
-  again:function(){
-    // console.log(12)
-    // wx.showToast({
-    //   title: '25',
-    // })
-
-    wx.navigateBack({
-      delta: 1
-    })
-
-
-
-  }
-
 
 })

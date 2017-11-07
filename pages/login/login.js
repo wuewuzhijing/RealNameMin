@@ -412,7 +412,6 @@ Page({
     that.setData({
       ident: "",
       identName: "",
-      mobile: "",
       loginType: 2,
       self: false,
       switchType: 0

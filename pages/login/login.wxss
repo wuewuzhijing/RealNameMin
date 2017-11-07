@@ -21,7 +21,7 @@
 
 .addTitle-text {
   width: 150rpx;
-  padding: 20rpx 0;
+  padding: 25rpx 0;
 }
 
 .addTitle-input {

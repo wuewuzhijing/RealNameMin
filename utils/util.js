@@ -17,6 +17,7 @@ const formatNumber = n => {
 const appId = "wx4d62bd61eb6b0330"; //开发环境
 const getOpenIdUrl = "https://dev.bookingyun.com/hotel_wx/rest/wxRest/getSNSUserInfoByEncryptedData";  // 开发环境
 var rootDocment = 'https://dev.bookingyun.com/CenterMaster/';   // 开发环境
+const policeUrl = "https://dev.bookingyun.com/CenterMaster/police/checkIdentAngPic"
 
 
 // const appId = "wx4d62bd61eb6b0330"; //正式环境
@@ -69,12 +70,7 @@ function getQuery(url, parms, message, success, fail) {
 
 // 发送请求日志到服务器
 function sendLog(type, logType, clientMethod, costTime, serviceName, url, contentIn, contentOut, contentException) {
-
-  if (url.indexOf("queryInvoiceHeadsByKeyword") > -1) {  // 剔除掉模糊搜索的日志
-    return;
-  }
   var that = this;
-
   let serviceId = '';
   if (url.indexOf('hotel_wx') > -1) {
     serviceId = 3;
@@ -207,6 +203,7 @@ module.exports = {
   checkSettingStatu: checkSettingStatu,
   appId: appId,
   getOpenIdUrl: getOpenIdUrl,
+  policeUrl: policeUrl,
   sendLog: sendLog,
   jsonToUrl: jsonToUrl,
 }

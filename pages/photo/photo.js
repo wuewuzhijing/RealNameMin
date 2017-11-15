@@ -1,4 +1,4 @@
-// pages/login/login.js
+var util = require("../../utils/util.js")
 Page({
   /**
    * 页面的初始数据
@@ -22,8 +22,8 @@ Page({
     this.setData({
       identName: options.identName,
       ident: options.ident
-    })
-    console.log("拍照启动")
+    });
+    console.log("拍照启动");
   },
 
   /**
@@ -71,15 +71,18 @@ Page({
 
 //人脸认证
   upload: function (filePath) {
+    var start = new Date().getTime();
     var that = this;  
+    let data = {
+      ident: that.data.ident, 
+      identName: that.data.identName,
+      hotelId:"B335C79F2B7748A49DCF962BDBC8D220"
+    };
     wx.uploadFile({
-      url: "https://dev.bookingyun.com/CenterMaster/police/checkIdentAngPic",
+      url: util.policeUrl,
       filePath: filePath,
       name: 'file',
-      formData:
-      {
-        ident: that.data.ident, identName: that.data.identName
-      },
+      formData: data,
       success: function (res) {
         console.log(res);
         console.log(res.data);
@@ -87,11 +90,12 @@ Page({
         console.log(dataObject.returnCode);
        
         if (dataObject.returnCode == 1) {
-          
           that.setData({
             recognizeIcon: "../../images/icon/recognize_suc.png",
             middleText: "实名登记成功",
           })
+          var end = new Date().getTime();
+          util.sendLog('', 1002, "post", end - start, "police/checkIdentAngPic", util.policeUrl, data, res.data, res.data.returnMessage);
           setTimeout(function () {
             wx.navigateBack({
               delta: 1
@@ -107,10 +111,14 @@ Page({
             middleText: "人像识别未通过",
             isDim: false
           })
+          var end = new Date().getTime();
+          util.sendLog('error', 1001, "post", end - start, "police/checkIdentAngPic", util.policeUrl, data, res.data, res.data.returnMessage)
         }
       },
       fail: function (error) {
         console.error(error);
+        var end = new Date().getTime();
+        util.sendLog('fail', 1003, "post", end - start, "police/checkIdentAngPic", util.policeUrl, data, error.data, error.errMsg);
       }
     })
 
